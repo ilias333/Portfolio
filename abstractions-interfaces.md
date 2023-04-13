@@ -355,3 +355,199 @@ class CheckingAccount extends Account {
 
 
 ```
+## Задача 3. Доп задания
+1. Создайте абстрактный класс Shape, который содержит абстрактные методы area() и perimeter(), возвращающие double. Создайте классы Rectangle и Circle, которые наследуются от класса Shape и реализуют его абстрактные методы.
+
+2. Создайте интерфейс Drawable с одним методом draw(). Реализуйте этот интерфейс в классах Rectangle и Circle из предыдущей задачи.
+
+3. Создайте абстрактный класс Animal с абстрактным методом makeSound(). Создайте интерфейс Swimmable с методом swim(). Создайте классы Dog, Cat, и Duck, которые наследуются от класса Animal и реализуют его абстрактный метод makeSound(). Класс Duck должен также реализовывать интерфейс Swimmable.
+
+4. Создайте интерфейс Growable с методами grow() и shrink(). Добавьте дефолтный метод resetSize(), который возвращает объект к его начальному размеру. Создайте классы Plant и Animal, реализующие интерфейс Growable.
+
+5. Создайте класс Student, содержащий имя и оценку. Реализуйте интерфейс Comparable<Student> в классе Student, сравнивая студентов по их оценкам. Создайте список студентов и отсортируйте его.
+  
+ОТВЕТЫ:
+
+```java 
+  public class Main {
+
+    public static void main(String[] args) {
+        Rectangle rectangle = new Rectangle(10, 5);
+        System.out.println("Rectangle area: " + rectangle.area());
+        System.out.println("Rectangle perimeter: " + rectangle.perimeter());
+        rectangle.draw();
+
+        Circle circle = new Circle(3);
+        System.out.println("Circle area: " + circle.area());
+        System.out.println("Circle perimeter: " + circle.perimeter());
+        circle.draw();
+    }
+}
+
+
+
+
+
+public abstract class Shape {
+    public abstract double area();
+    public abstract double perimeter();
+}
+
+public interface Drawable {
+    void draw ();
+}
+
+public class Rectangle extends Shape implements Drawable{
+    private double width;
+    private double height;
+
+    public Rectangle(double width, double height) {
+        this.width = width;
+        this.height = height;
+    }
+    @Override
+    public double area() {
+        return width*height;
+    }
+
+    @Override
+    public double perimeter() {
+        return 2 * (width + height);
+    }
+
+    @Override
+    public void draw() {
+        System.out.println("Drawing a rectangle");
+    }
+}
+
+public class Circle extends Shape implements Drawable{
+    private double radius;
+
+    public Circle(double radius) {
+        this.radius = radius;
+    }
+
+    @Override
+    public double area() {
+        return Math.PI * radius * radius;
+    }
+
+    @Override
+    public double perimeter() {
+        return 2 * Math.PI * radius;
+    }
+
+    @Override
+    public void draw() {
+        System.out.println("Drawing a circle");
+    }
+
+    }
+3
+public class Main {
+
+    public static void main(String[] args) {
+   Dog dog = new Dog();
+   Cat cat = new Cat();
+   Duck duck = new Duck();
+
+   dog.makeSound();
+   cat.makeSound();
+   duck.swim();
+    }
+}
+
+public abstract class Animal {
+    public abstract void makeSound();
+}
+
+public interface Swimmable {
+    void swim();
+}
+
+public class Duck extends Animal implements Swimmable{
+    @Override
+    public void makeSound() {
+        System.out.println("Кря кря");
+    }
+
+    @Override
+    public void swim() {
+        System.out.println("Утка плывет");
+    }
+}
+
+public class Dog extends Animal{
+    @Override
+    public void makeSound() {
+        System.out.println("Гав гав");
+    }
+}
+
+public class Cat extends Animal{
+    @Override
+    public void makeSound() {
+        System.out.println("Мяу");
+    }
+}
+
+4
+	public interface Growable {
+    void grow();
+    void shrink();
+
+    default void resetSize() {
+        System.out.println("Размер обнулился");
+    }
+}
+
+public class Plant implements Growable {
+    private int size;
+
+    public Plant(int size) {
+        this.size = size;
+    }
+
+    @Override
+    public void grow() {
+        size += 1;
+    }
+
+    @Override
+    public void shrink() {
+        size -= 1;
+    }
+
+    @Override
+    public void resetSize() {
+        size = 0;
+    }
+}
+
+public class Animal implements Growable{
+    private int size;
+
+    public Animal(int size) {
+        this.size = size;
+    }
+
+    @Override
+    public void grow() {
+        size += 1;
+    }
+
+    @Override
+    public void shrink() {
+        size -= 1;
+    }
+
+    @Override
+    public void resetSize() {
+        size = 0;
+    }
+}
+5.
+
+
+```
