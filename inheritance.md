@@ -40,8 +40,9 @@ protected void moveToStatus(Book book, Status requestedStatus) {
    System.out.println(book.getStatus());
 ```
 ОТВЕТ:
-
-    public class Main {
+```java 
+    
+   public class Main {
     public static void main(String[] args) {
         Librarian librarian = new Librarian("John");
         librarian.orderBook();
@@ -59,40 +60,40 @@ protected void moveToStatus(Book book, Status requestedStatus) {
 
 
     }
-    }
+}
 
-    public class User {
-    String name;
+public class User {
+String name;
 
-    public User (String name){
+public User (String name){
     this.name=name;
-    };
+};
     public String getName() {
         return name;
 
-    }
-    }
+}
+}
 
-    public interface IAdmin {
+public interface IAdmin {
      void findBook();
      void giveBook();
     void overdueNotification(Reader reader);
-    }
+}
 
-    public interface IReader {
+public interface IReader {
      void takeBook();
     void returnBook();
-    }
+}
 
-    public interface ISupplier {
+public interface ISupplier {
      void bringBook ();
-    }
+}
 
-    public interface ILibrarian {
+public interface ILibrarian {
     void orderBook ();
-    }
+}
 
-    public class Administrator extends User implements IAdmin, ILibrarian {
+public class Administrator extends User implements IAdmin, ILibrarian {
     public Administrator(String name) {
         super(name);
     }
@@ -120,9 +121,9 @@ protected void moveToStatus(Book book, Status requestedStatus) {
     public void overdueNotification(Supplier supplier) {
         System.out.println("Администратор уведомил пользователя - " + supplier.getName());
     }
-    }
+}
 
-    public class Supplier extends User implements ISupplier, IReader {
+public class Supplier extends User implements ISupplier, IReader {
     public Supplier(String name) {
         super(name);
     }
@@ -141,9 +142,9 @@ protected void moveToStatus(Book book, Status requestedStatus) {
     public void returnBook() {
         System.out.println("Поставщик сделал возврат книги");
     }
-    }
+}
 
-    public class Librarian extends User implements ILibrarian, IAdmin {
+public class Librarian extends User implements ILibrarian, IAdmin {
 
     public Librarian(String name) {
         super(name);
@@ -170,9 +171,9 @@ protected void moveToStatus(Book book, Status requestedStatus) {
     public void orderBook() {
         System.out.println("Библиотекарь заказал книгу");
     }
-    }
+}
 
-    public class Reader extends User implements IReader {
+public class Reader extends User implements IReader {
     public Reader(String name) {
         super(name);
     }
@@ -186,5 +187,7 @@ protected void moveToStatus(Book book, Status requestedStatus) {
     public void returnBook() {
         System.out.println("Читатель сделал возврат книги");
     }
-    }
+
+
+}
 
