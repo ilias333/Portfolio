@@ -186,3 +186,172 @@ public class Reader extends User implements IReader {
 
 
 ```
+
+## Задача 2. Банковские счета
+
+### Описание
+Часто в проектировании программ нам удобно опираться на понятия, которые не представлены в реальном мире,
+но служат удобной "опорой" для объединения нескольких классов.
+
+Так, например, в банковском деле нет абстрактного понятия "Счет". Каждый счет в банке имеет четкое назначение: сберегательный, кредитный, расчетный.
+Но банковская программа работает с общими для счетов операциями как с одинаковыми объектами, и выполняет их, обращаясь к общему типу "Счет",
+хотя его и невозможно явно инстанцировать в программе. Реализуйте этот сценарий, опираясь на механизмы полиморфизма.
+
+### Функционал программы
+1. Создайте несколько классов — различных счетов на основе общего интерфейса:
+  - Сберегательный счет (`SavingsAccount`)
+  - Кредитный счет (`CreditAccount`)
+  - Расчетный счет (`CheckingAccount`)
+2. Выполните перевод с одного счета на другой в методе `public static void main`.
+
+### Пример реализации
+1. Создайте абстрактный класс `Account` с тремя методами: заплатить, перевести, пополнить (`pay(int amount)`, `transfer(Account account, int amount)`, `addMoney(int amount)`).
+Платеж в нашем случае будет выглядеть просто как списание средств.
+2. Добавьте классы Сберегательный, Кредитный, Расчетный (`SavingsAccount`, `CreditAccount`, `CheckingAccount` соответственно) как потомков класса Счет.
+В них нужно переопределить методы базового класса. Каждый из них должен хранить баланс. Со сберегательного счета нельзя платить, только переводить и пополнять. Также сберегательный не может уходить в минус.
+Кредитный не может иметь положительный баланс – если платить с него, то уходит в минус, чтобы вернуть в 0, надо пополнить его.
+Расчетный может выполнять все три операции, но не может уходить в минус.
+3. Продемонстрируйте работу счетов. Создайте три переменные типа `Account` и присвойте им три разных типа счетов.
+
+ОТВЕТ:
+
+```java 
+public class Main {
+
+    public static void main(String[] args) {
+        Account savingsAccount = new SavingsAccount(1000);
+        Account creditAccount = new CreditAccount(0);
+        Account checkingAccount = new CheckingAccount(2000);
+
+
+        System.out.println("Initial balances:");
+        System.out.println("Savings account: " + savingsAccount.getBalance());
+        System.out.println("Credit account: " + creditAccount.getBalance());
+        System.out.println("Checking account: " + checkingAccount.getBalance());
+
+        savingsAccount.transfer(checkingAccount, 500);
+        creditAccount.pay(501);
+        System.out.println("Credit account: " + creditAccount.getBalance());
+        checkingAccount.transfer(savingsAccount, 1000);
+        creditAccount.addMoney(501);
+        System.out.println("Credit account: " + creditAccount.getBalance());
+        creditAccount.addMoney(23);
+        savingsAccount.pay(232);
+
+        System.out.println("Final balances:");
+        System.out.println("Savings account: " + savingsAccount.getBalance());
+        System.out.println("Credit account: " + creditAccount.getBalance());
+        System.out.println("Checking account: " + checkingAccount.getBalance());
+
+        savingsAccount.transfer(checkingAccount, 1600);
+        System.out.println("Savings account: " + savingsAccount.getBalance());
+
+        checkingAccount.transfer(savingsAccount, 1600);
+        System.out.println("Checking account: " + checkingAccount.getBalance());
+
+        checkingAccount.addMoney(2323);
+        System.out.println("Checking account: " + checkingAccount.getBalance());
+    }
+}
+
+
+abstract class Account {
+    protected int balance;
+
+    public Account(int balance) {
+        this.balance = balance;
+    }
+
+    public void pay(int amount) {
+        balance = balance - amount;
+    }
+
+    public void transfer(Account account, int amount) {
+        balance = balance - amount;
+        account.addMoney(amount);
+    }
+
+    public void addMoney(int amount) {
+        balance = balance + amount;
+    }
+
+    public int getBalance() {
+        return balance;
+    }
+
+}
+
+class SavingsAccount extends Account {
+
+    public SavingsAccount(int balance) {
+        super(balance);
+    }
+    @Override
+    public void pay(int amount) {
+        System.out.println("Ошибка");
+    }
+
+    @Override
+    public void transfer(Account account, int amount) {
+        if (balance - amount >= 0) {
+            balance = balance - amount;
+            account.addMoney(amount);
+        } else {
+            System.out.println("Недостаточно средств на сберегательном");
+        }
+    }
+
+}
+
+class CreditAccount extends Account {
+    public CreditAccount(int balance) {
+        super(balance);
+    }
+
+    @Override
+    public void pay(int amount) {
+        if (balance - amount <= 0) {
+            balance = balance - amount;
+        }
+    }
+
+    @Override
+    public void addMoney(int amount) {
+        if (balance < 0) {
+            balance += amount;
+            if (balance > 0) {
+                balance = 0;
+
+            }
+        } else {
+            System.out.println("У вас нет долгов");
+        }
+    }
+}
+
+class CheckingAccount extends Account {
+
+    public CheckingAccount(int balance) {
+        super(balance);
+    }
+    @Override
+    public void pay(int amount) {
+        if (balance - amount >= 0) {
+            balance = balance - amount;
+        } else {
+            System.out.println("Недостаточно средств на расчетном");
+        }
+    }
+    @Override
+    public void transfer(Account account, int amount) {
+        if (balance - amount >= 0) {
+            balance = balance - amount;
+            account.addMoney(amount);
+        } else {
+            System.out.println("Недостаточно средств на расчетном");
+        }
+    }
+}
+
+
+```
