@@ -106,7 +106,9 @@ System.out.println(sum.toString()); // => 0.30
 ```
 
 ОТВЕТ:
+```java 
 
+  import java.math.BigDecimal;
   public class Main {
 
     public static void main(String[] args) {
