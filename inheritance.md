@@ -42,152 +42,146 @@ protected void moveToStatus(Book book, Status requestedStatus) {
 ОТВЕТ:
 ```java 
     
-   public class Main {
+  public class Main {
+
     public static void main(String[] args) {
-        Librarian librarian = new Librarian("John");
-        librarian.orderBook();
-        Supplier supplier = new Supplier("Orda");
-        supplier.bringBook();
-        Reader reader = new Reader("Steve");
-        reader.takeBook();
 
-        librarian.giveBook();
-
-
-        Administrator administrator = new Administrator("Alex");
-        administrator.overdueNotification(reader);
-
-
+        Book book = new Book("The Lord of the Rings");
+        BookMover fromAvailableStatusMover = new FromAvailableStatusMover();
+        fromAvailableStatusMover.moveToStatus(book, Status.BORROWED);
+        System.out.println(book.getStatus());
+        BookMover fromArchivedStatusMover = new FromArchivedStatusMover();
+        fromArchivedStatusMover.moveToStatus(book, Status.AVAILABLE);
+        System.out.println(book.getStatus());
+        BookMover fromOverduedStatusMover = new FromOverduedStatusMover();
+        fromOverduedStatusMover.moveToStatus(book, Status.ARCHIVED);
+        System.out.println(book.getStatus());
+        BookMover fromBorrowedStatusMover = new FromBorrowedStatusMover();
+        fromBorrowedStatusMover.moveToStatus(book, Status.OVERDUED);
+        System.out.println(book.getStatus());
 
     }
 }
 
-public class User {
-String name;
-
-public User (String name){
-    this.name=name;
-};
-    public String getName() {
-        return name;
-
-}
+public enum Status {
+    AVAILABLE, BORROWED, OVERDUED, ARCHIVED
 }
 
-public interface IAdmin {
-     void findBook();
-     void giveBook();
-    void overdueNotification(Reader reader);
-}
+public class Book{
+    private String title;
+    public Status status;
 
-public interface IReader {
-     void takeBook();
-    void returnBook();
-}
+    Book(String title, Status status){
+        this.title=title;
+        this.status=status;}
 
-public interface ISupplier {
-     void bringBook ();
-}
+    Book(String title){
+        this.title=title;}
 
-public interface ILibrarian {
-    void orderBook ();
-}
+    public Status getStatus(){
+        return status;
 
-public class Administrator extends User implements IAdmin, ILibrarian {
-    public Administrator(String name) {
-        super(name);
-    }
-
-    @Override
-    public void findBook() {
-        System.out.println("Администратор нашел книгу");
-    }
-
-    @Override
-    public void giveBook() {
-        System.out.println("Администратор отдал книгу");
-    }
-
-    @Override
-    public void overdueNotification(Reader reader) {
-        System.out.println("Администратор уведомил пользователя - " + reader.getName());
-    }
-
-    @Override
-    public void orderBook() {
-        System.out.println("Администратор закзал книгу");
-    }
-
-    public void overdueNotification(Supplier supplier) {
-        System.out.println("Администратор уведомил пользователя - " + supplier.getName());
     }
 }
 
-public class Supplier extends User implements ISupplier, IReader {
-    public Supplier(String name) {
-        super(name);
-    }
-
-    @Override
-    public void bringBook() {
-        System.out.println("Поставщик ппривез книги в библиотеку");
-    }
-
-    @Override
-    public void takeBook() {
-        System.out.println("Поставщик взял книгу");
-    }
-
-    @Override
-    public void returnBook() {
-        System.out.println("Поставщик сделал возврат книги");
+public class BookMover {
+    protected void moveToStatus(Book book, Status requestedStatus) {
+        System.out.println("Moving status...");
     }
 }
 
-public class Librarian extends User implements ILibrarian, IAdmin {
-
-    public Librarian(String name) {
-        super(name);
-    }
-
+public class FromOverduedStatusMover extends BookMover {
     @Override
-    public void findBook() {
-        System.out.println("Библиотекарь нашел книгу");
-    }
+    public void moveToStatus(Book book, Status requestedStatus) {
+        {
+            switch (requestedStatus) {
 
-    @Override
-    public void giveBook() {
-        System.out.println("Библиотекарь отдал книгу");
-    }
+                case AVAILABLE:
+                    book.status = Status.AVAILABLE;
+                    break;
 
-    @Override
-    public void overdueNotification(Reader reader) {
-        System.out.println("Библиотекарь уведомил пользователя - " + reader.getName());
-    }
-    public void overdueNotification(Supplier supplier) {
-        System.out.println("Администратор уведомил пользователя - " + supplier.getName());
-    }
-    @Override
-    public void orderBook() {
-        System.out.println("Библиотекарь заказал книгу");
+                case BORROWED:
+                    break;
+                default:
+                    System.out.println("Из текущего статуса OVERDUED книгу нельзя перевести в BORROWED");
+                    break;
+
+                case ARCHIVED:
+                    book.status = Status.ARCHIVED;
+                    break;
+
+                case OVERDUED:
+                    System.out.println("Из текущего статуса OVERDUED книгу нельзя перевести в OVERDUED");
+                    break;
+            }
+        }
     }
 }
 
-public class Reader extends User implements IReader {
-    public Reader(String name) {
-        super(name);
-    }
+public class FromBorrowedStatusMover extends BookMover {
 
     @Override
-    public void takeBook() {
-        System.out.println("Читатель взял книгу ");
+    public void moveToStatus(Book book, Status requestedStatus) {
+        if (book.getStatus() == Status.BORROWED){
+            switch (requestedStatus){
+                case AVAILABLE:
+                    book.status = Status.AVAILABLE;
+                    break;
+                case BORROWED:
+                    System.out.println("Из текущего статуса BORROWED книгу нельзя перевести в BORROWED");
+                    break;
+                case ARCHIVED:
+                    book.status = Status.ARCHIVED;
+                    break;
+                case OVERDUED:
+                    book.status = Status.OVERDUED;
+                    break;
+            }
+        }
     }
+}
+
+public class FromAvailableStatusMover extends BookMover {
 
     @Override
-    public void returnBook() {
-        System.out.println("Читатель сделал возврат книги");
+    public void moveToStatus(Book book, Status requestedStatus) {
+        switch (requestedStatus){
+
+            case AVAILABLE:
+                break;
+            default:
+                System.out.println("Из текущего статуса AVAILABLE книгу нельзя перевести в AVAILABLE");
+                break;
+            case BORROWED:
+                book.status = Status.BORROWED;
+                break;
+            case ARCHIVED:
+                book.status = Status.ARCHIVED;
+                break;
+            case OVERDUED:
+                System.out.println("Из текущего статуса AVAILABLE книгу нельзя перевести в OVERDUED");
+                break;
+        }
     }
+}
 
-
+public class FromArchivedStatusMover extends BookMover{
+    @Override
+    public void moveToStatus(Book book, Status requestedStatus) {
+        switch (requestedStatus){
+            case ARCHIVED:
+                System.out.println("Из текущего статуса ARCHIVED книгу нельзя перевести в ARCHIVED");
+                break;
+            case AVAILABLE:
+                book.status = Status.AVAILABLE;
+                break;
+            case BORROWED:
+                System.out.println("Из текущего статуса ARCHIVED книгу нельзя перевести в BORROWED");
+                break;
+            case OVERDUED:
+                System.out.println("Из текущего статуса ARCHIVED книгу нельзя перевести в OVERDUED");
+                break;
+        }
+    }
 }
 
