@@ -16,8 +16,6 @@
 
 Ответ:
 
-public class Main {
-
 	public static void main(String[] args) {
 		int[] nums = {7, -3, 9, -11, 18, 99, 2, 11};;
 		for ( int i = 0; i < nums.length/2; i++)
@@ -25,23 +23,22 @@ public class Main {
 			System.out.println(nums[i]);
 		}
 	}
-}
+
 
 3. Вывести вторую половину массива (Вывести вторую половину элементов массива при помощи цикла for). Реализация задачи должна работать при любом чётном количестве элементов.
 
 Ответ:
 
-public class Main {
 
-   public static void main(String[] args) {
+   	public static void main(String[] args) {
    
       int[] nums = {7, -3, 9, -11, 18, 99, 2, 11};;
       for ( int i = nums.length/2; i < nums.length;  i++)
       {
          System.out.println(nums[i]);
       }
-   }
-}
+     }
+
 
 Вывести все элементы кроме первого и последнего.
 
