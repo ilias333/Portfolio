@@ -73,10 +73,10 @@ public static void validateUser(User user) throws AccessDeniedException
 
 ```java 
 public class User {
-    String login;
-    String password;
-    String email;
-    int age;
+   private String login;
+   private String password;
+   private String email;
+   private int age;
 
     public User(String login, String email, String password, int age) {
         this.login = login;
@@ -100,10 +100,6 @@ public class User {
     public int getAge() {
         return age;
     }
-
-
-
-
 }
 
 public class UserNotFoundException extends Exception {
@@ -133,7 +129,7 @@ public class Main {
     public static User getUserByLoginAndPassword(String login, String password) throws UserNotFoundException {
         User[] users = getUsers();
         for (User user : users) {
-            if (user.getLogin().equals(login) && user.getPassword().equals(password)) {
+            if (user.getLogin().equalsIgnoreCase(login) && user.getPassword().equals(password)) {
                 return user;
             }
         }
@@ -146,7 +142,7 @@ public class Main {
             throw new AccessDeniedException("Доступ запрещен");
         }
     }
-    public static void main(String[] args) throws UserNotFoundException, AccessDeniedException {
+    public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
 
